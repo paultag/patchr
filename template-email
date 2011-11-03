@@ -1,0 +1,21 @@
+From daemon@pault.ag # This line is ignored.
+From: daemon@pault.ag
+Subject: New patches from Github. Pending review.
+In-Reply-To:
+
+This is an automated batch of commits that have been pulled from the
+Github mirror of Fluxbox.
+
+If these are in error, please notify Paul Tagliamonte <paultag@fluxbox.org> as
+soon as you find an issue.
+
+The Github mirror can be found at:
+
+ https://github.com/fluxbox/fluxbox
+ https://github.com/fluxbox/fluxbox/pulls
+
+Following is a set of format-patches with the contents of this set against
+fluxbox.org's origin/master.
+
+Thanks for your time,
+Paul's Daemon

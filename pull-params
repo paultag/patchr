@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+import urllib2
+import json
+
+org       = "fluxbox"
+project   = "fluxbox"
+fwd_tag   = "pending-review"
+
+request_url = "http://github.com/api/v2/json/pulls/%s/%s" % (
+	org, project
+)
+
+def getRemoteJSON( request_url ):
+	response = urllib2.urlopen(request_url)
+	jpayload = response.read()
+	pulls    = json.loads(jpayload)
+	return pulls
+
+pulls = getRemoteJSON( request_url )['pulls']
+
+def createRemoteRepo( name, project ):
+	return "git://github.com/%s/%s" % ( name, project )
+
+def createIssueURL( org, project, pull ):
+	return "http://github.com/api/v2/json/issues/show/%s/%s/%s" % (
+		org, project, pull
+	)
+
+for pull in pulls:
+	paramString = ""
+
+	issueInfo = getRemoteJSON(
+		createIssueURL(org, project, pull['number']))['issue']
+
+	tags = issueInfo['labels']
+
+	paramString += str(pull['number'])
+
+	if fwd_tag in tags:
+		paramString += " true"
+	else:
+		paramString += " false"
+
+	paramString += " %s" % createRemoteRepo(
+		pull['user']['login'], project )
+	paramString += " %s" % pull['head']['ref']
+
+	print paramString

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cp /home/tag/pull-patchr/template-email $1

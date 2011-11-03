@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DAEMON_ADMIN="paultag@fluxbox.org"
+REVIEW_LIST="akira@fluxbox.org"
+PASSWORD="PASSWORD_HERE"
+
+export GIT_EDITOR="/home/tag/pull-patchr/fake-editor"
+
+SEND_MAIL="git send-email --confirm=never --cc=$DAEMON_ADMIN --compose --from=daemon@pault.ag --to=$REVIEW_LIST --smtp-encryption=tls --smtp-pass=$PASSWORD --smtp-server=smtp.gmail.com --smtp-user=daemon@pault.ag --smtp-server-port=587"
+
+cd format-patch-cache
+
+TO_SEND=`find -type f | grep NEW`
+for x in $TO_SEND; do
+	if [ "x`cat $x`" != "xNEW" ]; then
+		echo "Fake new token. Ignoring"
+	else
+		DIR=`dirname $x`
+		echo "Need to send mail for $DIR"
+		rm $x
+		cd ../fluxbox/
+		$SEND_MAIL ../format-patch-cache/$DIR
+		cd ../format-patch-cache/
+	fi
+done

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+git clone file:///git/fluxbox.git
+
+REQUESTS="`./pull-params`"
+
+echo "$REQUESTS" | while read pull; do
+	./generate-patchset $pull
+done
+
+./send-emails
+
+rm -rf fluxbox

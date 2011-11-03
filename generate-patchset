@@ -1,0 +1,55 @@
+#!/bin/bash
+
+APPDIR="."
+REPODIR="fluxbox"
+CACHEDIR="format-patch-cache"
+
+INTEGRATION_BRANCH="paultag-fluxbox-integration-daemon"
+INTEGRATION_REMOTE="paultag-integration-branch"
+
+if [ $# -ne 4 ]; then
+	echo "Invalid usage :("
+	exit 1
+fi
+
+# 4 false git://github.com/rpavlik/fluxbox master
+
+GIT_ROOT="$APPDIR/$REPODIR"
+CACHE_ROOT="$APPDIR/$CACHEDIR"
+
+PULLNO=$1
+ACKNED=$2
+REMOTE=$3
+BRANCH=$4
+
+echo "Processing:"
+echo " Pull: $PULLNO"
+echo " ACKD: $ACKNED"
+echo " REMO: $REMOTE"
+echo " BRAN: $BRANCH"
+
+POPDIR=`pwd`
+
+cd $GIT_ROOT
+
+if [ -d "../format-patch-cache/github-request-$PULLNO" ]; then
+	echo "Looks like we have these patches already. Ending."
+	exit 2
+fi
+
+git remote add $INTEGRATION_REMOTE $REMOTE
+git branch $INTEGRATION_BRANCH
+git checkout $INTEGRATION_BRANCH
+git pull $INTEGRATION_REMOTE $BRANCH
+PATCHES=`git format-patch origin/master`
+mv $PATCHES ../format-patch-cache/incoming
+git checkout master
+git branch -D $INTEGRATION_BRANCH
+git remote rm $INTEGRATION_REMOTE
+git reset --hard
+cd ..
+cd format-patch-cache
+mkdir "github-request-$PULLNO"
+mv incoming/* ./github-request-$PULLNO
+
+echo "NEW" > ./github-request-$PULLNO/NEW
