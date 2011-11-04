@@ -1,0 +1,13 @@
+Oi, you've found me.
+
+This is a set of scripts (they really are one thing, they can't really be that useful when seperated) that do various things. More on those in a moment.
+
+- runme: this calls the send-github-hellos script.
+
+- send-github-hellos: this does a git clone of the master git repository, and then does a pull. Also triggers the pull-params python script, the send-emails section, and the generate-patchset.
+
+- generate-patchset: this creates a local branch for integration, and a integration git remote. More or less it creates a directory called `github-request-$PULLNO` (with $PULLNO being replaced by the actual number of course). Once this is done, the send-github-hellos script says "heh, good job you finished, next script!", which would be our friend send-emails:
+
+- send-emails: This is where the fun stuff is. It sends an email via gmail to the patch review list, which is awesome.
+
+Then we have two files leftover - the fake-editor (which is needed for the send-github-hellos script to work), and the template-email. 
